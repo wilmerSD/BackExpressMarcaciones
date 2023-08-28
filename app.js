@@ -46,6 +46,23 @@ app.post('/login', (req, res) => {
     return res.json({ message: 'Inicio de sesión exitoso', user });
   });
 });
+//Ruta para guardar asistencia 
+app.post('/marcaciones', (req, res) => {
+    const { userId } = req.body; // Supongamos que el frontend envía el ID del usuario
+    if (!userId) {
+      return res.status(400).json({ message: 'ID de usuario es requerido' });
+    }
+  
+    const insertQuery = 'INSERT INTO registros_asistencia (usuario_id, fecha, hora) VALUES (?, CURDATE(), CURTIME())';
+    db.query(insertQuery, [userId], (err, results) => {
+      if (err) {
+        console.error('Error al guardar registro de asistencia:', err);
+        return res.status(500).json({ message: 'Error en el servidor' });
+      }
+      
+      return res.json({ message: 'Asistencia marcada exitosamente' });
+    });
+  });
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
